@@ -36,6 +36,14 @@ public class Inventory {
         return stock.values().stream().mapToInt(Integer::intValue).sum();
     }
 
+    public int skuCount() {
+        return stock.size();
+    }
+
+    public boolean isInStock(String sku) {
+        return stock.getOrDefault(sku, 0) > 0;
+    }
+
     public Map<String, Integer> snapshot() {
         return Collections.unmodifiableMap(new LinkedHashMap<>(stock));
     }

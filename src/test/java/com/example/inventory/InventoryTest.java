@@ -74,6 +74,32 @@ class InventoryTest {
     }
 
     @Test
+    @DisplayName("sku count tracks distinct skus")
+    void skuCountTracksDistinctSkus() {
+        inventory.receive(new Item("SKU-1", 1));
+        inventory.receive(new Item("SKU-1", 2));
+        inventory.receive(new Item("SKU-2", 1));
+
+        assertEquals(2, inventory.skuCount());
+    }
+
+    @Test
+    @DisplayName("in stock is true only while units remain")
+    void inStockReflectsRemainingUnits() {
+        inventory.receive(new Item("SKU-1", 1));
+        assertTrue(inventory.isInStock("SKU-1"));
+
+        inventory.dispatch("SKU-1", 1);
+        assertFalse(inventory.isInStock("SKU-1"));
+    }
+
+    @Test
+    @DisplayName("unknown skus are not in stock")
+    void unknownSkuIsNotInStock() {
+        assertFalse(inventory.isInStock("MISSING"));
+    }
+
+    @Test
     @DisplayName("snapshot is not writable by callers")
     void snapshotIsUnmodifiable() {
         inventory.receive(new Item("SKU-1", 1));
